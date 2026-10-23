@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#173c2e">
+  <meta name="description" content="A cozy, interactive travel journal for a three-day Baguio trip, November 28–30, 2026.">
+  <title>A Weekend in Baguio | Travel Journal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="Baguio Trip home"><span class="brand-mark">♠</span><span>Baguio <em>Trip</em></span></a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+    <nav class="main-nav" id="mainNav" aria-label="Main navigation">
+      <a href="#home" class="nav-link active">Home</a>
+      <a href="#itinerary" class="nav-link">Itinerary</a>
+      <a href="#checklist" class="nav-link">Checklist</a>
+      <a href="#map" class="nav-link">Map</a>
+      <a href="#budget" class="nav-link">Budget</a>
+      <a href="#gallery" class="nav-link">Gallery</a>
+    </nav>
+    <span class="header-date">▦ &nbsp; Nov 28–30, 2026</span>
+  </header>
+
+  <main>
+    <section class="hero section-shell" id="home">
+      <div class="hero-photo">
+        <div class="hero-shade"></div>
+        <div class="hero-copy">
+          <p class="eyebrow light">YOUR LITTLE ESCAPE</p>
+          <p class="script hero-kicker">A weekend in</p>
+          <h1>Baguio<span class="hero-period">.</span></h1>
+          <p class="hero-description">Pine trees, cozy cafés, strawberry fields,<br class="desktop-only"> and memories in the City of Pines.</p>
+          <span class="date-ribbon">Nov 28 – 30, 2026</span>
+        </div>
+        <p class="hero-note script">Good food.<br>Great views.<br>Better company ♡</p>
+      </div>
+      <div class="hero-footer">
+        <div class="mini-stat"><span class="stat-icon">▦</span><span><strong>3 Days</strong><small>Adventure</small></span></div>
+        <div class="mini-stat"><span class="stat-icon">⌂</span><span><strong>2 Nights</strong><small>Stay</small></span></div>
+        <div class="mini-stat"><span class="stat-icon">♧</span><span><strong>Explore</strong><small>& Relax</small></span></div>
+        <div class="countdown-inline"><span class="eyebrow">THE COUNTDOWN IS ON</span><strong id="heroCountdown">Loading the days…</strong></div>
+      </div>
+    </section>
+
+    <section class="section section-shell" id="itinerary">
+      <div class="section-heading">
+        <div><p class="eyebrow">THE PLAN</p><h2>Our itinerary<span class="period">.</span></h2><p class="section-subtitle">Three days of slow mornings and little adventures.</p></div>
+        <span class="heading-doodle">♧</span>
+      </div>
+      <div class="day-tabs" role="tablist" aria-label="Choose trip day">
+        <button class="day-tab selected" data-day="0" role="tab" aria-selected="true"><strong>Day 1</strong><span>Nov 28</span></button>
+        <button class="day-tab" data-day="1" role="tab" aria-selected="false"><strong>Day 2</strong><span>Nov 29</span></button>
+        <button class="day-tab" data-day="2" role="tab" aria-selected="false"><strong>Day 3</strong><span>Nov 30</span></button>
+      </div>
+      <div class="itinerary-layout">
+        <aside class="day-aside">
+          <figure class="polaroid tilt-left"><img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=700&q=85" alt="Mountain peaks under a dramatic sky"><figcaption>Mountain views</figcaption></figure>
+          <figure class="polaroid tilt-right"><img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=700&q=85" alt="Coffee and a warm café moment"><figcaption>Coffee breaks</figcaption></figure>
+          <p class="script aside-note">Collect moments,<br>not things ♡</p>
+        </aside>
+        <div class="timeline-panel" id="timelinePanel" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="section section-shell" id="checklist">
+      <div class="section-heading">
+        <div><p class="eyebrow">BEFORE WE GO</p><h2>Little things to remember<span class="period">.</span></h2><p class="section-subtitle">Check them off as you get ready. Your progress is saved in this browser.</p></div>
+        <span class="heading-doodle">✓</span>
+      </div>
+      <div class="checklist-toolbar">
+        <div class="check-tabs" role="tablist" aria-label="Checklist category">
+          <button class="check-tab selected" data-list="essentials">Essentials</button>
+          <button class="check-tab" data-list="day1">Day 1</button>
+          <button class="check-tab" data-list="day2">Day 2</button>
+          <button class="check-tab" data-list="day3">Day 3</button>
+        </div>
+        <span class="progress-label" id="checkProgress">0 / 0 done</span>
+      </div>
+      <div class="checklist-card" id="checklistItems"></div>
+      <p class="handwritten checklist-note">Pack light, travel far, make memories ♡</p>
+    </section>
+
+    <section class="section section-shell" id="map">
+      <div class="section-heading">
+        <div><p class="eyebrow">FIND YOUR WAY</p><h2>Places on the map<span class="period">.</span></h2><p class="section-subtitle">Tap a place to open it in Google Maps. Travel times can change with traffic.</p></div>
+        <span class="heading-doodle">⌖</span>
+      </div>
+      <div class="map-layout">
+        <div class="map-art">
+          <div class="map-topline"><span>✦ BAGUIO & NEARBY</span><span>CORDILLERA, PH</span></div>
+          <div class="map-land">
+            <span class="map-road road-one"></span><span class="map-road road-two"></span><span class="map-river"></span>
+            <a class="map-pin pin-one" href="https://www.google.com/maps/search/?api=1&query=Mines+View+Park+Baguio" target="_blank" rel="noopener"><i>1</i><span>Mines View</span></a>
+            <a class="map-pin pin-two" href="https://www.google.com/maps/search/?api=1&query=Wright+Park+Baguio" target="_blank" rel="noopener"><i>2</i><span>Wright Park</span></a>
+            <a class="map-pin pin-three" href="https://www.google.com/maps/search/?api=1&query=Camp+John+Hay+Baguio" target="_blank" rel="noopener"><i>3</i><span>Camp John Hay</span></a>
+            <a class="map-pin pin-four" href="https://www.google.com/maps/search/?api=1&query=La+Trinidad+Strawberry+Farm" target="_blank" rel="noopener"><i>4</i><span>Strawberry Farm</span></a>
+            <a class="map-pin pin-five" href="https://www.google.com/maps/search/?api=1&query=Burnham+Park+Baguio" target="_blank" rel="noopener"><i>5</i><span>Burnham Park</span></a>
+            <span class="map-town">BAGUIO CITY</span>
+            <span class="map-tree tree-a">♠</span><span class="map-tree tree-b">♠</span><span class="map-tree tree-c">♠</span>
+          </div>
+          <p class="map-caption">A little map for a big weekend. Not to scale.</p>
+        </div>
+        <div class="place-list" id="placeList"></div>
+      </div>
+    </section>
+
+    <section class="section section-shell" id="budget">
+      <div class="section-heading">
+        <div><p class="eyebrow">MONEY MATTERS</p><h2>Our trip budget<span class="period">.</span></h2><p class="section-subtitle">Track your spending as you go. Amounts are in Philippine pesos.</p></div>
+        <span class="heading-doodle">₱</span>
+      </div>
+      <div class="budget-summary">
+        <article class="budget-total"><span>Total planned</span><strong id="plannedTotal">₱15,000</strong><small>Editable categories below</small></article>
+        <article class="budget-spent"><span>Total spent</span><strong id="spentTotal">₱0</strong><small>Expenses you have added</small></article>
+        <article class="budget-remaining"><span>Remaining</span><strong id="remainingTotal">₱15,000</strong><small id="budgetMessage">A little room for memories</small></article>
+      </div>
+      <div class="budget-table-wrap">
+        <table class="budget-table">
+          <thead><tr><th>Category</th><th>Planned (₱)</th><th>Spent (₱)</th><th>Notes</th><th></th></tr></thead>
+          <tbody id="budgetRows"></tbody>
+        </table>
+      </div>
+      <div class="budget-actions"><button class="button button-primary" id="addExpenseBtn">＋ Add expense</button><button class="button button-quiet" id="resetBudgetBtn">Reset budget</button></div>
+      <p class="fine-print">Starter budget only — replace these estimates with your actual hotel, bus, food, and activity costs.</p>
+    </section>
+
+    <section class="section section-shell" id="gallery">
+      <div class="section-heading">
+        <div><p class="eyebrow">LITTLE MOMENTS</p><h2>Postcards from Baguio<span class="period">.</span></h2><p class="section-subtitle">A moodboard for the places and memories ahead.</p></div>
+        <span class="heading-doodle">♡</span>
+      </div>
+      <div class="gallery-grid">
+        <button class="gallery-card gallery-tall" data-image="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1400&q=90" data-caption="Mountain views"><img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=85" alt="Mountain landscape"><span>01 / Mountain views</span></button>
+        <button class="gallery-card" data-image="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1400&q=90" data-caption="Slow coffee mornings"><img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=85" alt="Coffee in a cozy setting"><span>02 / Coffee stops</span></button>
+        <button class="gallery-card" data-image="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1400&q=90" data-caption="Fresh air and pine trees"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=85" alt="Green mountain range"><span>03 / Fresh air</span></button>
+        <button class="gallery-card" data-image="https://images.unsplash.com/photo-1493857671505-72967e2e2760?auto=format&fit=crop&w=1400&q=90" data-caption="Good food, good company"><img src="https://images.unsplash.com/photo-1493857671505-72967e2e2760?auto=format&fit=crop&w=800&q=85" alt="Food shared at a table"><span>04 / Good food</span></button>
+        <button class="gallery-card" data-image="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=90" data-caption="Roads to new memories"><img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=85" alt="Scenic travel landscape"><span>05 / Little adventures</span></button>
+        <button class="gallery-card" data-image="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1400&q=90" data-caption="Golden hour"><img src="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=800&q=85" alt="Warm golden hour landscape"><span>06 / Golden hour</span></button>
+      </div>
+      <p class="fine-print">Gallery images are visual inspiration from Unsplash, not verified photos of every listed Baguio location. Replace them with your own trip photos later.</p>
+    </section>
+
+    <section class="countdown-banner">
+      <div><p class="eyebrow light">COUNTING DOWN TO OUR ESCAPE</p><h2>See you in Baguio<span>.</span></h2><p>November 28–30, 2026 · Bring a jacket and your camera.</p></div>
+      <div class="countdown-grid" id="countdownGrid"><div><strong>—</strong><span>Days</span></div><div><strong>—</strong><span>Hours</span></div><div><strong>—</strong><span>Minutes</span></div><div><strong>—</strong><span>Seconds</span></div></div>
+      <span class="countdown-pine">♠</span>
+    </section>
+  </main>
+
+  <footer class="site-footer"><a class="brand footer-brand" href="#home"><span class="brand-mark">♠</span><span>Baguio <em>Trip</em></span></a><p>Made with care, coffee, and a little wanderlust.</p><a href="#home" class="back-top">Back to top ↑</a></footer>
+
+  <dialog id="expenseDialog" class="modal">
+    <form method="dialog" id="expenseForm">
+      <div class="modal-heading"><div><p class="eyebrow">BUDGET TRACKER</p><h3>Add an expense</h3></div><button class="close-modal" aria-label="Close">×</button></div>
+      <label for="expenseName">What did you spend on?</label><input id="expenseName" required maxlength="60" placeholder="e.g. Strawberry taho">
+      <label for="expenseCategory">Category</label><select id="expenseCategory"><option>Meals</option><option>Transportation</option><option>Accommodation</option><option>Entrance Fees</option><option>Activities</option><option>Others</option></select>
+      <label for="expenseAmount">Amount (₱)</label><input id="expenseAmount" type="number" min="1" step="0.01" required placeholder="150">
+      <label for="expenseNotes">Notes (optional)</label><input id="expenseNotes" maxlength="100" placeholder="Who paid, or any details">
+      <div class="modal-actions"><button class="button button-quiet" value="cancel">Cancel</button><button class="button button-primary" id="saveExpenseBtn" value="default">Save expense</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="lightbox" class="lightbox"><button class="lightbox-close" aria-label="Close image">×</button><img id="lightboxImage" alt=""><p id="lightboxCaption"></p></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
