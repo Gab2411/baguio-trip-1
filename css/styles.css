@@ -178,3 +178,104 @@ h1, h2, h3, p { margin-top: 0; }
   .site-footer { padding: 12px 15px 24px; gap: 10px; flex-wrap: wrap; }.site-footer p { order: 3; width: 100%; }.back-top { margin-left: auto; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
+
+.itinerary-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.itinerary-add-btn,
+.itinerary-edit-btn,
+.itinerary-move-btn {
+  padding: 9px 15px;
+  border: 1px solid #d8dfd5;
+  border-radius: 30px;
+  background: #fff;
+  color: #173c2e;
+  cursor: pointer;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 600;
+}
+
+.itinerary-add-btn {
+  background: #173c2e;
+  color: white;
+}
+
+.itinerary-item-actions {
+  display: flex;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.itinerary-editor {
+  width: min(500px, calc(100% - 30px));
+  border: none;
+  border-radius: 18px;
+  padding: 25px;
+}
+
+.itinerary-editor::backdrop {
+  background: rgba(15, 35, 25, .75);
+}
+
+.itinerary-editor h3 {
+  color: #173c2e;
+  font-family: "Playfair Display", serif;
+}
+
+.itinerary-editor label {
+  display: block;
+  margin: 13px 0 6px;
+  font-weight: 600;
+}
+
+.itinerary-editor input,
+.itinerary-editor textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #d8dfd5;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.itinerary-editor textarea {
+  min-height: 80px;
+}
+
+.editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.editor-actions button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+#editorDelete {
+  margin-right: auto;
+  background: #f8e6e2;
+  color: #9d3328;
+}
+
+#editorCancel {
+  background: #eeeeea;
+}
+
+.editor-actions button[type="submit"] {
+  background: #173c2e;
+  color: white;
+}
+
+.itinerary-move-btn:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+}
