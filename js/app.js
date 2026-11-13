@@ -1,6 +1,14 @@
 
 const STORAGE_KEY = "baguioTripJournal2026";
 
+const SUPABASE_URL = "https://acwcjbmhrmrjkzcgdmgu.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_R7hUemA8XnsLWalsQHDjjw_PP83xMOB";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
 const itinerary = [
   {
     date: "November 28, 2026",
@@ -148,6 +156,7 @@ let activeDay = 0;
 let activeChecklist = "essentials";
 let editingItemIndex = null;
 let toastTimer;
+let appInitialized = false;
 
 function saveState() {
   try {
@@ -206,34 +215,16 @@ function createItineraryEditor() {
       <h3 id="editorHeading">Edit activity</h3>
 
       <label for="editorTime">Time or time range</label>
-      <input
-        id="editorTime"
-        required
-        maxlength="40"
-        placeholder="9:00 AM – 10:00 AM"
-      >
+      <input id="editorTime" required maxlength="40" placeholder="9:00 AM – 10:00 AM">
 
       <label for="editorName">Activity name</label>
-      <input
-        id="editorName"
-        required
-        maxlength="100"
-        placeholder="Enter activity name"
-      >
+      <input id="editorName" required maxlength="100" placeholder="Enter activity name">
 
       <label for="editorNote">Description</label>
-      <textarea
-        id="editorNote"
-        maxlength="300"
-        placeholder="Add some details"
-      ></textarea>
+      <textarea id="editorNote" maxlength="300" placeholder="Add some details"></textarea>
 
       <label for="editorLocation">Location</label>
-      <input
-        id="editorLocation"
-        maxlength="160"
-        placeholder="Enter location"
-      >
+      <input id="editorLocation" maxlength="160" placeholder="Enter location">
 
       <div class="editor-actions">
         <button type="button" id="editorDelete">Delete</button>
@@ -352,11 +343,7 @@ function renderItinerary() {
 
   document.querySelectorAll(".day-tab").forEach((button, index) => {
     button.classList.toggle("selected", index === activeDay);
-
-    button.setAttribute(
-      "aria-selected",
-      String(index === activeDay)
-    );
+    button.setAttribute("aria-selected", String(index === activeDay));
   });
 
   const panel = document.getElementById("timelinePanel");
@@ -383,21 +370,13 @@ function renderItinerary() {
             <p class="timeline-note">${safeText(note)}</p>
 
             ${location ? `
-              <a
-                class="timeline-location"
-                href="${mapsUrl(location)}"
-                target="_blank"
-                rel="noopener"
-              >
+              <a class="timeline-location" href="${mapsUrl(location)}" target="_blank" rel="noopener">
                 ↗ Open in Google Maps
               </a>
             ` : ""}
 
             <div class="itinerary-item-actions">
-              <button
-                class="itinerary-edit-btn"
-                data-edit-itinerary="${index}"
-              >
+              <button class="itinerary-edit-btn" data-edit-itinerary="${index}">
                 ✎ Edit
               </button>
 
@@ -407,9 +386,7 @@ function renderItinerary() {
                 data-direction="-1"
                 ${index === 0 ? "disabled" : ""}
                 aria-label="Move activity up"
-              >
-                ↑
-              </button>
+              >↑</button>
 
               <button
                 class="itinerary-move-btn"
@@ -417,9 +394,7 @@ function renderItinerary() {
                 data-direction="1"
                 ${index === day.items.length - 1 ? "disabled" : ""}
                 aria-label="Move activity down"
-              >
-                ↓
-              </button>
+              >↓</button>
             </div>
           </div>
         </li>
@@ -466,11 +441,7 @@ function renderChecklist() {
 
     return `
       <label class="check-row">
-        <input
-          type="checkbox"
-          data-check-key="${key}"
-          ${checked ? "checked" : ""}
-        >
+        <input type="checkbox" data-check-key="${key}" ${checked ? "checked" : ""}>
         <span class="custom-check"></span>
         <span class="check-text">${safeText(item)}</span>
       </label>
@@ -488,19 +459,12 @@ function renderChecklist() {
 function renderPlaces() {
   document.getElementById("placeList").innerHTML = places.map(
     ([name, area, query], index) => `
-      <a
-        class="place-link"
-        href="${mapsUrl(query)}"
-        target="_blank"
-        rel="noopener"
-      >
+      <a class="place-link" href="${mapsUrl(query)}" target="_blank" rel="noopener">
         <span class="place-number">${index + 1}</span>
-
         <span>
           <strong>${safeText(name)}</strong>
           <small>${safeText(area)} · Open in Google Maps</small>
         </span>
-
         <span class="place-arrow">↗</span>
       </a>
     `
@@ -513,54 +477,23 @@ function renderBudget() {
   body.innerHTML = state.budget.map(row => `
     <tr data-budget-id="${row.id}">
       <td>
-        <input
-          aria-label="Category"
-          data-field="category"
-          value="${safeText(row.category)}"
-          maxlength="45"
-        >
+        <input aria-label="Category" data-field="category" value="${safeText(row.category)}" maxlength="45">
       </td>
 
       <td>
-        <input
-          aria-label="Planned amount"
-          data-field="planned"
-          type="number"
-          min="0"
-          step="50"
-          value="${Number(row.planned) || 0}"
-        >
+        <input aria-label="Planned amount" data-field="planned" type="number" min="0" step="50" value="${Number(row.planned) || 0}">
       </td>
 
       <td>
-        <input
-          aria-label="Spent amount"
-          data-field="spent"
-          type="number"
-          min="0"
-          step="1"
-          value="${Number(row.spent) || 0}"
-        >
+        <input aria-label="Spent amount" data-field="spent" type="number" min="0" step="1" value="${Number(row.spent) || 0}">
       </td>
 
       <td>
-        <input
-          aria-label="Notes"
-          data-field="notes"
-          value="${safeText(row.notes || "")}"
-          maxlength="100"
-        >
+        <input aria-label="Notes" data-field="notes" value="${safeText(row.notes || "")}" maxlength="100">
       </td>
 
       <td>
-        <button
-          class="delete-row"
-          data-delete-budget="${row.id}"
-          aria-label="Delete ${safeText(row.category)} category"
-          title="Delete category"
-        >
-          ×
-        </button>
+        <button class="delete-row" data-delete-budget="${row.id}" aria-label="Delete ${safeText(row.category)} category" title="Delete category">×</button>
       </td>
     </tr>
   `).join("");
@@ -608,31 +541,18 @@ function renderExpenses() {
 
   state.expenses.forEach(expense => {
     const tr = document.createElement("tr");
-
     tr.className = "expense-detail-row";
 
     tr.innerHTML = `
       <td>
         <strong>${safeText(expense.name)}</strong>
-        <small style="display:block;color:#888">
-          ${safeText(expense.category)}
-        </small>
+        <small style="display:block;color:#888">${safeText(expense.category)}</small>
       </td>
-
       <td>—</td>
-
       <td>${money(expense.amount)}</td>
-
       <td>${safeText(expense.notes || "Added expense")}</td>
-
       <td>
-        <button
-          class="delete-row"
-          data-delete-expense="${expense.id}"
-          aria-label="Delete expense"
-        >
-          ×
-        </button>
+        <button class="delete-row" data-delete-expense="${expense.id}" aria-label="Delete expense">×</button>
       </td>
     `;
 
@@ -643,19 +563,14 @@ function renderExpenses() {
 }
 
 function updateCountdown() {
-  const target = new Date(
-    "2026-11-28T03:15:00+08:00"
-  ).getTime();
-
+  const target = new Date("2026-11-28T03:15:00+08:00").getTime();
   const now = Date.now();
   const diff = target - now;
 
   let values;
 
   if (diff <= 0) {
-    const end = new Date(
-      "2026-12-01T00:00:00+08:00"
-    ).getTime();
+    const end = new Date("2026-12-01T00:00:00+08:00").getTime();
 
     if (now < end) {
       values = ["Trip time!", "Enjoy", "every", "moment"];
@@ -714,161 +629,137 @@ function init() {
     });
   });
 
-  document.getElementById("checklistItems").addEventListener(
-    "change",
-    event => {
-      const input = event.target.closest("input[data-check-key]");
+  document.getElementById("checklistItems").addEventListener("change", event => {
+    const input = event.target.closest("input[data-check-key]");
 
-      if (!input) return;
+    if (!input) return;
 
-      state.checked[input.dataset.checkKey] = input.checked;
+    state.checked[input.dataset.checkKey] = input.checked;
 
-      saveState();
-      renderChecklist();
-    }
-  );
+    saveState();
+    renderChecklist();
+  });
 
-  document.getElementById("budgetRows").addEventListener(
-    "change",
-    event => {
-      const input = event.target.closest("input[data-field]");
+  document.getElementById("budgetRows").addEventListener("change", event => {
+    const input = event.target.closest("input[data-field]");
 
-      if (!input) return;
+    if (!input) return;
 
-      const rowElement = input.closest("[data-budget-id]");
+    const rowElement = input.closest("[data-budget-id]");
 
-      const row = state.budget.find(item => {
-        return String(item.id) === rowElement.dataset.budgetId;
-      });
+    const row = state.budget.find(item => {
+      return String(item.id) === rowElement.dataset.budgetId;
+    });
 
-      if (!row) return;
+    if (!row) return;
 
-      const field = input.dataset.field;
+    const field = input.dataset.field;
 
-      row[field] = ["planned", "spent"].includes(field)
-        ? Math.max(0, Number(input.value) || 0)
-        : input.value;
+    row[field] = ["planned", "spent"].includes(field)
+      ? Math.max(0, Number(input.value) || 0)
+      : input.value;
 
-      saveState();
-      renderBudget();
-      renderExpenses();
+    saveState();
+    renderBudget();
+    renderExpenses();
 
-      showToast("Budget updated and saved.");
-    }
-  );
+    showToast("Budget updated and saved.");
+  });
 
-  document.getElementById("budgetRows").addEventListener(
-    "click",
-    event => {
-      const delCategory = event.target.closest("[data-delete-budget]");
-      const delExpense = event.target.closest("[data-delete-expense]");
+  document.getElementById("budgetRows").addEventListener("click", event => {
+    const delCategory = event.target.closest("[data-delete-budget]");
+    const delExpense = event.target.closest("[data-delete-expense]");
 
-      if (delCategory) {
-        state.budget = state.budget.filter(row => {
-          return String(row.id) !== delCategory.dataset.deleteBudget;
-        });
-
-        saveState();
-        renderBudget();
-        renderExpenses();
-
-        showToast("Budget category removed.");
-      }
-
-      if (delExpense) {
-        state.expenses = state.expenses.filter(item => {
-          return String(item.id) !== delExpense.dataset.deleteExpense;
-        });
-
-        saveState();
-        renderBudget();
-        renderExpenses();
-
-        showToast("Expense removed.");
-      }
-    }
-  );
-
-  document.getElementById("addExpenseBtn").addEventListener(
-    "click",
-    () => {
-      document.getElementById("expenseDialog").showModal();
-    }
-  );
-
-  document.getElementById("expenseForm").addEventListener(
-    "submit",
-    event => {
-      if (event.submitter && event.submitter.value === "cancel") {
-        return;
-      }
-
-      event.preventDefault();
-
-      const name = document.getElementById("expenseName").value.trim();
-      const amount = Number(
-        document.getElementById("expenseAmount").value
-      );
-
-      if (!name || !Number.isFinite(amount) || amount <= 0) {
-        showToast("Enter an expense name and a valid amount.");
-        return;
-      }
-
-      state.expenses.push({
-        id: Date.now(),
-        name,
-        category: document.getElementById("expenseCategory").value,
-        amount,
-        notes: document.getElementById("expenseNotes").value.trim()
+    if (delCategory) {
+      state.budget = state.budget.filter(row => {
+        return String(row.id) !== delCategory.dataset.deleteBudget;
       });
 
       saveState();
       renderBudget();
       renderExpenses();
 
-      document.getElementById("expenseForm").reset();
-      document.getElementById("expenseDialog").close();
-
-      showToast("Expense added and saved.");
+      showToast("Budget category removed.");
     }
-  );
 
-  document.getElementById("resetBudgetBtn").addEventListener(
-    "click",
-    () => {
-      if (!confirm(
-        "Reset all budget categories and expenses to the starter budget?"
-      )) return;
-
-      state.budget = starterBudget.map(row => ({ ...row }));
-      state.expenses = [];
+    if (delExpense) {
+      state.expenses = state.expenses.filter(item => {
+        return String(item.id) !== delExpense.dataset.deleteExpense;
+      });
 
       saveState();
       renderBudget();
       renderExpenses();
 
-      showToast("Budget reset.");
+      showToast("Expense removed.");
     }
-  );
+  });
+
+  document.getElementById("addExpenseBtn").addEventListener("click", () => {
+    document.getElementById("expenseDialog").showModal();
+  });
+
+  document.getElementById("expenseForm").addEventListener("submit", event => {
+    if (event.submitter && event.submitter.value === "cancel") {
+      return;
+    }
+
+    event.preventDefault();
+
+    const name = document.getElementById("expenseName").value.trim();
+    const amount = Number(document.getElementById("expenseAmount").value);
+
+    if (!name || !Number.isFinite(amount) || amount <= 0) {
+      showToast("Enter an expense name and a valid amount.");
+      return;
+    }
+
+    state.expenses.push({
+      id: Date.now(),
+      name,
+      category: document.getElementById("expenseCategory").value,
+      amount,
+      notes: document.getElementById("expenseNotes").value.trim()
+    });
+
+    saveState();
+    renderBudget();
+    renderExpenses();
+
+    document.getElementById("expenseForm").reset();
+    document.getElementById("expenseDialog").close();
+
+    showToast("Expense added and saved.");
+  });
+
+  document.getElementById("resetBudgetBtn").addEventListener("click", () => {
+    if (!confirm("Reset all budget categories and expenses to the starter budget?")) {
+      return;
+    }
+
+    state.budget = starterBudget.map(row => ({ ...row }));
+    state.expenses = [];
+
+    saveState();
+    renderBudget();
+    renderExpenses();
+
+    showToast("Budget reset.");
+  });
 
   document.querySelectorAll(".gallery-card").forEach(card => {
     card.addEventListener("click", () => {
       document.getElementById("lightboxImage").src = card.dataset.image;
-
-      document.getElementById("lightboxCaption").textContent =
-        card.dataset.caption;
-
+      document.getElementById("lightboxCaption").textContent = card.dataset.caption;
       document.getElementById("lightbox").showModal();
     });
   });
 
   const lightbox = document.getElementById("lightbox");
 
-  lightbox.querySelector(".lightbox-close").addEventListener(
-    "click",
-    () => lightbox.close()
-  );
+  lightbox.querySelector(".lightbox-close").addEventListener("click", () => {
+    lightbox.close();
+  });
 
   lightbox.addEventListener("click", event => {
     if (event.target === lightbox) {
@@ -881,7 +772,6 @@ function init() {
 
   menuToggle.addEventListener("click", () => {
     const open = nav.classList.toggle("open");
-
     menuToggle.setAttribute("aria-expanded", String(open));
   });
 
@@ -892,9 +782,7 @@ function init() {
     });
   });
 
-  const sections = [
-    ...document.querySelectorAll("main section[id]")
-  ];
+  const sections = [...document.querySelectorAll("main section[id]")];
 
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
@@ -914,4 +802,103 @@ function init() {
   sections.forEach(section => observer.observe(section));
 }
 
-document.addEventListener("DOMContentLoaded", init);
+function showLoginScreen() {
+  document.getElementById("authScreen").hidden = false;
+  document.getElementById("appContent").hidden = true;
+}
+
+function showPrivateJournal() {
+  document.getElementById("authScreen").hidden = true;
+  document.getElementById("appContent").hidden = false;
+
+  if (!appInitialized) {
+    init();
+    appInitialized = true;
+  }
+}
+
+async function handleLogin(event) {
+  event.preventDefault();
+
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  const loginBtn = document.getElementById("loginBtn");
+  const authError = document.getElementById("authError");
+
+  authError.textContent = "";
+  loginBtn.disabled = true;
+  loginBtn.textContent = "Signing in...";
+
+  try {
+    const { error } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      throw error;
+    }
+  } catch (error) {
+    console.error("Login error:", error);
+
+    authError.textContent =
+      error.message === "Invalid login credentials"
+        ? "Incorrect email or password. Please try again."
+        : error.message || "Unable to sign in. Please try again.";
+  } finally {
+    loginBtn.disabled = false;
+    loginBtn.textContent = "Sign in";
+  }
+}
+
+async function handleSignOut() {
+  const signOutBtn = document.getElementById("signOutBtn");
+
+  signOutBtn.disabled = true;
+  signOutBtn.textContent = "Signing out...";
+
+  const { error } = await supabaseClient.auth.signOut();
+
+  if (error) {
+    console.error("Sign out error:", error);
+    showToast("Unable to sign out. Please try again.");
+
+    signOutBtn.disabled = false;
+    signOutBtn.textContent = "Sign out";
+  }
+}
+
+async function initializeAuthentication() {
+  document.getElementById("authForm").addEventListener("submit", handleLogin);
+  document.getElementById("signOutBtn").addEventListener("click", handleSignOut);
+
+  showLoginScreen();
+
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (session) {
+      showPrivateJournal();
+    } else {
+      showLoginScreen();
+      appInitialized = false;
+    }
+  });
+
+  const { data, error } = await supabaseClient.auth.getSession();
+
+  if (error) {
+    console.error("Session error:", error);
+    document.getElementById("authError").textContent =
+      "Unable to verify your session. Please refresh the page.";
+    return;
+  }
+
+  if (data.session) {
+    showPrivateJournal();
+  } else {
+    showLoginScreen();
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initializeAuthentication();
+});
