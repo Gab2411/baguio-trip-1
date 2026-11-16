@@ -440,3 +440,13 @@ h1, h2, h3, p { margin-top: 0; }
     padding: 8px 11px;
   }
 }
+
+/* Fix login and dashboard visibility */
+#authScreen[hidden],
+#appContent[hidden] {
+    display: none !important;
+}
+
+#authScreen:not([hidden]) {
+    display: flex;
+}
