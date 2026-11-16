@@ -1,4 +1,3 @@
-
 const STORAGE_KEY = "baguioTripJournal2026";
 
 const SUPABASE_URL = "https://acwcjbmhrmrjkzcgdmgu.supabase.co";
@@ -201,7 +200,6 @@ function showToast(message) {
     toast.classList.remove("show");
   }, 2600);
 }
-
 function createItineraryEditor() {
   if (document.getElementById("itineraryEditor")) return;
 
@@ -561,7 +559,6 @@ function renderExpenses() {
 
   updateBudgetTotals();
 }
-
 function updateCountdown() {
   const target = new Date("2026-11-28T03:15:00+08:00").getTime();
   const now = Date.now();
@@ -801,15 +798,30 @@ function init() {
 
   sections.forEach(section => observer.observe(section));
 }
-
 function showLoginScreen() {
-  document.getElementById("authScreen").hidden = false;
-  document.getElementById("appContent").hidden = true;
+  const authScreen = document.getElementById("authScreen");
+  const appContent = document.getElementById("appContent");
+
+  if (authScreen) {
+    authScreen.hidden = false;
+  }
+
+  if (appContent) {
+    appContent.hidden = true;
+  }
 }
 
 function showPrivateJournal() {
-  document.getElementById("authScreen").hidden = true;
-  document.getElementById("appContent").hidden = false;
+  const authScreen = document.getElementById("authScreen");
+  const appContent = document.getElementById("appContent");
+
+  if (authScreen) {
+    authScreen.hidden = true;
+  }
+
+  if (appContent) {
+    appContent.hidden = false;
+  }
 
   if (!appInitialized) {
     init();
@@ -857,9 +869,13 @@ async function handleSignOut() {
   signOutBtn.disabled = true;
   signOutBtn.textContent = "Signing out...";
 
-  const { error } = await supabaseClient.auth.signOut();
+  try {
+    const { error } = await supabaseClient.auth.signOut();
 
-  if (error) {
+    if (error) {
+      throw error;
+    }
+  } catch (error) {
     console.error("Sign out error:", error);
     showToast("Unable to sign out. Please try again.");
 
@@ -869,8 +885,18 @@ async function handleSignOut() {
 }
 
 async function initializeAuthentication() {
-  document.getElementById("authForm").addEventListener("submit", handleLogin);
-  document.getElementById("signOutBtn").addEventListener("click", handleSignOut);
+  const authForm = document.getElementById("authForm");
+  const signOutBtn = document.getElementById("signOutBtn");
+
+  if (!authForm || !signOutBtn) {
+    console.error(
+      "Authentication elements are missing. Check authForm and signOutBtn in index.html."
+    );
+    return;
+  }
+
+  authForm.addEventListener("submit", handleLogin);
+  signOutBtn.addEventListener("click", handleSignOut);
 
   showLoginScreen();
 
@@ -879,7 +905,6 @@ async function initializeAuthentication() {
       showPrivateJournal();
     } else {
       showLoginScreen();
-      appInitialized = false;
     }
   });
 
@@ -887,8 +912,14 @@ async function initializeAuthentication() {
 
   if (error) {
     console.error("Session error:", error);
-    document.getElementById("authError").textContent =
-      "Unable to verify your session. Please refresh the page.";
+
+    const authError = document.getElementById("authError");
+
+    if (authError) {
+      authError.textContent =
+        "Unable to verify your session. Please refresh the page.";
+    }
+
     return;
   }
 
